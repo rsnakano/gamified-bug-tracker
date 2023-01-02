@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjectController;
@@ -15,10 +16,24 @@ use App\Http\Controllers\Api\ProjectController;
 |
 */
 
-Route::get('/projects', [ProjectController::class, 'index']);
+// Public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/projects', [ProjectController::class, 'store']);
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects/{id}', [ProjectController::class, 'show']);
+Route::get('/projects/search/{name}', [ProjectController::class, 'search']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Protected Routes
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::post('/projects', [ProjectController::class, 'store']);
+    Route::put('/projects/{id}', [ProjectController::class, 'update']);
+    Route::delete('/projects/{id}', [ProjectController::class], 'destroy');
 });
+
+// If you want to protect individual routes
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
