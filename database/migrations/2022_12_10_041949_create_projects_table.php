@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('description')->nullable();
-            $table->foreignId('leader')->constrained('users');
+            $table->foreignId('leader_id')->constrained('users');
             $table->boolean('completed');
             $table->timestamps();
         });

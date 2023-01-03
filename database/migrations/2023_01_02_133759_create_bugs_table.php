@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('bugs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->float('overall_score');
-            $table->rememberToken();
+            $table->string('bug_name');
+            $table->foreignId('project_id')->constrained('projects');
+            $table->boolean('completed');
+            $table->string('completed_by')->nullable();
+            $table->date('date_completed')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('bugs');
     }
 };
