@@ -2,20 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Bug;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class BugController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -25,7 +17,15 @@ class BugController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'bug_name' => 'required',
+            'project_id' => 'required|exists:projects,id',
+            'completed' => 'required|boolean',
+            'completed_by' => 'required|string|nullable',
+            'date_completed' => 'required|date|nullable',
+        ]);
+
+        return Bug::create($request->all());
     }
 
     /**
@@ -36,7 +36,7 @@ class BugController extends Controller
      */
     public function show($id)
     {
-        //
+        return Bug::find($id);
     }
 
     /**
@@ -48,7 +48,18 @@ class BugController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $bug = Bug::find($id);
+
+        $request->validate([
+            'project_id' => 'exists:projects,id',
+            'completed' => 'boolean',
+            'completed_by' => 'string|nullable',
+            'date_completed' => 'date|nullable',
+        ]);
+
+        $bug->update($request->all());
+
+        return $bug;
     }
 
     /**
@@ -59,6 +70,6 @@ class BugController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Bug::destroy($id);
     }
 }

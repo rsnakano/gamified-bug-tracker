@@ -14,6 +14,10 @@ class Bug extends Model
         'project_id',
         'completed',
         'completed_by',
-        'completed_date',
+        'date_completed',
     ];
+
+    public function project() {
+        return $this->belongsTo(Project::class);
+    }
 }

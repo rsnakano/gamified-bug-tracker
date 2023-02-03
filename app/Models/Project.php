@@ -13,7 +13,12 @@ class Project extends Model
         'name',
         'slug',
         'description',
-        'leader',
+        'leader_id',
         'completed'
     ];
+
+
+    public function bugs() {
+        return $this->hasMany(Bug::class);
+    }
 }

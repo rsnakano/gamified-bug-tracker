@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BugController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjectController;
@@ -22,7 +23,12 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
+// Route::get('/projects/{id}/bugs', [ProjectController::class, 'bugs']);
 Route::get('/projects/search/{name}', [ProjectController::class, 'search']);
+
+Route::post('/bugs', [BugController::class, 'store']);
+Route::put('/bugs/{id}', [BugController::class, 'update']);
+Route::delete('/bugs/{id}', [BugController::class, 'destroy']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {

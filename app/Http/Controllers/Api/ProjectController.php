@@ -30,7 +30,7 @@ class ProjectController extends Controller
             'name' => 'required',
             'slug' => 'required',
             'description' => 'max:100',
-            'leader' => 'required',
+            'leader_id' => 'required|exists:users,id',
             'completed' => 'required'
         ]);
 
@@ -38,14 +38,14 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified project with its bugs.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return Project::find($id);
+        return Project::find($id)->with('bugs')->get();
     }
 
     /**
@@ -61,6 +61,7 @@ class ProjectController extends Controller
 
         $request->validate([
             'description' => 'max:100',
+            'leader_id' => 'exists:users,id',
         ]);
 
         $project->update($request->all());
@@ -89,4 +90,19 @@ class ProjectController extends Controller
     {
         return Project::where('name', 'like', '%'.$name.'%')->get();
     }
+
+    /**
+     * PROBABLY NOT NEEDED
+     *
+     * Shows all bugs for a project.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function bugs($id)
+    {
+        return Project::find($id)->bugs;
+    }
+
+
 }
