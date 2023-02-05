@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\BugController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\ProjectUserController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +28,9 @@ Route::get('/projects/{id}', [ProjectController::class, 'show']);
 // Route::get('/projects/{id}/bugs', [ProjectController::class, 'bugs']);
 Route::get('/projects/search/{name}', [ProjectController::class, 'search']);
 
-Route::post('/bugs', [BugController::class, 'store']);
-Route::put('/bugs/{id}', [BugController::class, 'update']);
-Route::delete('/bugs/{id}', [BugController::class, 'destroy']);
+Route::get('/users/{id}', [UserController::class, 'show']);
+
+Route::get('projects/{project_id}/users/{user_id}', [ProjectUserController::class, 'show']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
@@ -37,6 +39,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/projects', [ProjectController::class, 'store']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
     Route::delete('/projects/{id}', [ProjectController::class], 'destroy');
+
+    Route::post('projects/{project_id}/users/{user_id}', [ProjectUserController::class, 'store']);
+    Route::put('projects/{project_id}/users/{user_id}', [ProjectUserController::class, 'update']);
+    Route::delete('projects/{project_id}/users/{user_id}', [ProjectUserController::class, 'destroy']);
+
+    Route::post('/bugs', [BugController::class, 'store']);
+    Route::put('/bugs/{id}', [BugController::class, 'update']);
+    Route::delete('/bugs/{id}', [BugController::class, 'destroy']);
 });
 
 // If you want to protect individual routes

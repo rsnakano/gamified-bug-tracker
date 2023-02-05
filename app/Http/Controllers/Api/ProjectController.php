@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Handler\Proxy;
 
 class ProjectController extends Controller
 {
@@ -31,21 +32,21 @@ class ProjectController extends Controller
             'slug' => 'required',
             'description' => 'max:100',
             'leader_id' => 'required|exists:users,id',
-            'completed' => 'required'
+            'completed' => 'required|boolean'
         ]);
 
         return Project::create($request->all());
     }
 
     /**
-     * Display the specified project with its bugs.
+     * Display the specified project with its bugs and users.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return Project::find($id)->with('bugs')->get();
+        return Project::find($id)->with('bugs', 'users')->get();
     }
 
     /**
@@ -103,6 +104,4 @@ class ProjectController extends Controller
     {
         return Project::find($id)->bugs;
     }
-
-
 }

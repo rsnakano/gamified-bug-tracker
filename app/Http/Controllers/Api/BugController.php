@@ -21,8 +21,8 @@ class BugController extends Controller
             'bug_name' => 'required',
             'project_id' => 'required|exists:projects,id',
             'completed' => 'required|boolean',
-            'completed_by' => 'required|string|nullable',
-            'date_completed' => 'required|date|nullable',
+            'completed_by' => 'string|nullable',
+            'date_completed' => 'date|nullable',
         ]);
 
         return Bug::create($request->all());
@@ -53,8 +53,8 @@ class BugController extends Controller
         $request->validate([
             'project_id' => 'exists:projects,id',
             'completed' => 'boolean',
-            'completed_by' => 'string|nullable',
-            'date_completed' => 'date|nullable',
+            'completed_by' => 'string',
+            'date_completed' => 'date',
         ]);
 
         $bug->update($request->all());

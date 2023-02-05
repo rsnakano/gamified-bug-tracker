@@ -21,4 +21,8 @@ class Project extends Model
     public function bugs() {
         return $this->hasMany(Bug::class);
     }
+
+    public function users() {
+        return $this->belongsToMany(User::class);
+    }
 }
