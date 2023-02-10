@@ -69,10 +69,13 @@ class ProjectUserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($projectId, $userId) {
-        DB::table('project_user')
-            ->where('project_id', $projectId)
-            ->where('user_id', $userId)
-            ->delete();
+        // DB::table('project_user')
+        //     ->where('project_id', $projectId)
+        //     ->where('user_id', $userId)
+        //     ->delete();
+
+        $project = Project::find($projectId);
+        $project->users()->detach($userId);
 
         return response(200);
 
