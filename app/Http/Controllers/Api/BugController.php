@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Bug;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class BugController extends Controller
 {
@@ -25,7 +26,11 @@ class BugController extends Controller
             'date_completed' => 'date|nullable',
         ]);
 
-        return Bug::create($request->all());
+        $bug = Bug::create($request->all());
+
+        return response()->json([
+            'data' => $bug
+        ], $status = HttpResponse::HTTP_CREATED);
     }
 
     /**
@@ -36,7 +41,16 @@ class BugController extends Controller
      */
     public function show($id)
     {
-        return Bug::find($id);
+        $bug = Bug::find($id);
+        if (!$bug) {
+            return response()->json([
+                'error' => 'The bug requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'data' => $bug
+        ], $status = HttpResponse::HTTP_OK);
     }
 
     /**
@@ -49,6 +63,11 @@ class BugController extends Controller
     public function update(Request $request, $id)
     {
         $bug = Bug::find($id);
+        if (!$bug) {
+            return response()->json([
+                'error' => 'The bug requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
 
         $request->validate([
             'project_id' => 'exists:projects,id',
@@ -59,7 +78,7 @@ class BugController extends Controller
 
         $bug->update($request->all());
 
-        return $bug;
+        return response()->noContent();
     }
 
     /**
@@ -70,6 +89,15 @@ class BugController extends Controller
      */
     public function destroy($id)
     {
-        return Bug::destroy($id);
+        $bug = Bug::find($id);
+        if (!$bug) {
+            return response()->json([
+                'error' => 'The bug requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
+
+        $bug->delete();
+
+        return response()->noContent();
     }
 }

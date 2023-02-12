@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use GuzzleHttp\Handler\Proxy;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ProjectResource;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class ProjectController extends Controller
 {
@@ -16,7 +18,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return Project::all();
+        $project = ProjectResource::collection(Project::all());
+
+        return response()->json([
+            'data' => $project
+        ], $status = HttpResponse::HTTP_OK);
     }
 
     /**
@@ -35,7 +41,11 @@ class ProjectController extends Controller
             'completed' => 'required|boolean'
         ]);
 
-        return Project::create($request->all());
+        $project = Project::create($request->all());
+
+        return response()->json([
+            'data' => $project
+        ], $status = HttpResponse::HTTP_CREATED);
     }
 
     /**
@@ -46,7 +56,16 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return Project::with('bugs', 'users')->find($id);
+        $project = Project::with('bugs', 'users')->find($id);
+        if (!$project) {
+            return response()->json([
+                'error' => 'The project requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'data' => $project
+        ], $status = HttpResponse::HTTP_OK);
     }
 
     /**
@@ -59,6 +78,11 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         $project = Project::find($id);
+        if (!$project) {
+            return response()->json([
+                'error' => 'The project requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
 
         $request->validate([
             'description' => 'max:100',
@@ -67,7 +91,7 @@ class ProjectController extends Controller
 
         $project->update($request->all());
 
-        return $project;
+        return response()->noContent();
     }
 
     /**
@@ -78,7 +102,16 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        return Project::destroy($id);
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json([
+                'error' => 'The project requested does not exist'
+            ], $status = HttpResponse::HTTP_NOT_FOUND);
+        }
+
+        $project->delete();
+
+        return response()->noContent();
     }
 
     /**
@@ -89,19 +122,11 @@ class ProjectController extends Controller
      */
     public function search($name)
     {
-        return Project::where('name', 'like', '%'.$name.'%')->get();
+        $project = Project::where('name', 'like', '%'.$name.'%')->get();
+
+        return response()->json([
+            'data' => $project
+        ], $status = HttpResponse::HTTP_OK);
     }
 
-    /**
-     * PROBABLY NOT NEEDED
-     *
-     * Shows all bugs for a project.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function bugs($id)
-    {
-        return Project::find($id)->bugs;
-    }
 }

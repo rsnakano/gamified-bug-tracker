@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class AuthController extends Controller
 {
@@ -31,8 +32,9 @@ class AuthController extends Controller
             'token' => $token,
         ];
 
-        // Make into HttpResponse object
-        return response($response, 201);
+        return response()->json([
+            'data' => $response
+        ], $status = HttpResponse::HTTP_CREATED);
     }
 
     public function login(Request $request) {
@@ -57,8 +59,9 @@ class AuthController extends Controller
             'token' => $token,
         ];
 
-        // Make into HttpResponse object
-        return response($response, 201);
+        return response()->json([
+            'data' => $response
+        ], $status = HttpResponse::HTTP_CREATED);
     }
 
     public function logout(Request $request) {

@@ -23,9 +23,8 @@ use App\Http\Controllers\Api\UserController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects', [ProjectController::class, 'index']);
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
-// Route::get('/projects/{id}/bugs', [ProjectController::class, 'bugs']);
 Route::get('/projects/search/{name}', [ProjectController::class, 'search']);
 
 Route::get('/users/{id}', [UserController::class, 'show']);
